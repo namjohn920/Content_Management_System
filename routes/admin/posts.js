@@ -51,7 +51,8 @@ router.post('/create', (req, res) => {
         status: req.body.status,
         allowComments: allowComments,
         body: req.body.body,
-        file:filename
+        file:filename,
+        date: Date.now()
     });
 
     newPost.save().then(savedPost => {

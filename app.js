@@ -21,7 +21,6 @@ mongoose.connect(key.MongoURI,{ useNewUrlParser: true })
     console.log(err);
 });
 
-
 //Setting Static Folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -29,11 +28,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 const port = 3000 || process.env.PORT;
 
 //Setting up VIEW Engine
-const {select} = require('./helpers/handlebars-helpers');
+const {select, GenerateTime} = require('./helpers/handlebars-helpers');
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main',
-    helpers: {select: select}, 
+    helpers: {select: select,
+    GenerateTime: GenerateTime}, 
     //The first SELECT is the name thats going to be used in handlebars template. It can be anyname
 }));
 app.set('view engine', 'handlebars');
@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 //Method Override
 app.use(methodOverride('_method'));
 
-//
+//Session
 app.use(session({
     secret: "Hello",
     resave: true,
