@@ -30,12 +30,13 @@
         <label for="status">Category</label>
         <select name="category" id="status" class="form-control">
 
-
+            {{#select post.category}}
             {{#each categories}}
 
             <option value="{{id}}">{{name}}</option>
 
             {{/each}}
+            {{/select}}
 
         </select>
     </div>

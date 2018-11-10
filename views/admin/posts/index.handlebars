@@ -8,6 +8,7 @@
             <th>Image</th>
             <th>Title</th>
             <th>Status</th>
+            <th>Category</th>
             <th>Allow comments</th>
             <th>Date</th>
         </tr>
@@ -19,6 +20,7 @@
             <td><img style="width: 200px;" src="{{file}}"></td>
             <td>{{title}}</td>
             <td>{{status}}</td>
+            <td>{{category.name}}</td>
             <td>{{allowComments}}</td>
             <td>{{GenerateTime date 'MMMM Do YYYY, h:mm:ss a'}}</td>
             <td><a href="/admin/posts/edit/{{id}}" class="btn btn-info">Edit</a></td>
