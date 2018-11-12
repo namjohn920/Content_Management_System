@@ -9,6 +9,7 @@ const upload = require('express-fileupload');
 const session = require('express-session');
 const flash = require('connect-flash');
 const key = require('./config/key');
+const passport = require('passport');
 
 //Database Settings
 const mongoose = require('mongoose');
@@ -57,10 +58,17 @@ app.use(session({
 
 app.use(flash());
 
+//Passport
+app.use(passport.initialize());
+  app.use(passport.session());
+
+//Local Variables using Middleware
 app.use((req, res, next) => {
+    res.locals.user = req.user || null;
     res.locals.success_message = req.flash('success_message');
     res.locals.error_message = req.flash('error_message');
     res.locals.form_errors = req.flash('form_errors');
+    res.locals.error = req.flash('error');
     next();
 });
 
