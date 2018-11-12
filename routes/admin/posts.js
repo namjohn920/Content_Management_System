@@ -24,53 +24,82 @@ router.get('/', (req, res) => {
 
 router.get('/create', (req, res) => {
     Category.find({}).then(categories => {
-        res.render('admin/posts/create', {categories:categories});
+        res.render('admin/posts/create', { categories: categories });
     });
 });
 
 router.post('/create', (req, res) => {
-    
-    let filename = 'https://data.whicdn.com/images/310822942/superthumb.jpg?t=1523888483'
 
-    if (!isEmpty(req.files)) {
+    let errors = [];
 
-        let file = req.files.file;
-        filename = '/uploads/' + Date.now() + '-'+ file.name;
 
-        file.mv('./public' + filename, (err) => {
-            if (err) throw err;
-        }); 
+    if (!req.body.title) {
+
+        errors.push({ message: 'please add a title' });
+
     }
 
-    let allowComments = true;
-    if (req.body.allowComments) {
-        allowComments = true
+
+    if (!req.body.body) {
+
+        errors.push({ message: 'please add a description' });
+
+    }
+
+
+    if (errors.length > 0) {
+
+        res.render('admin/posts/create', {
+
+            errors: errors
+
+        });
+
     } else {
-        allowComments = false;
+        let filename = 'https://data.whicdn.com/images/310822942/superthumb.jpg?t=1523888483'
+
+        if (!isEmpty(req.files)) {
+
+            let file = req.files.file;
+            filename = '/uploads/' + Date.now() + '-' + file.name;
+
+            file.mv('./public' + filename, (err) => {
+                if (err) throw err;
+            });
+        }
+
+        let allowComments = true;
+        if (req.body.allowComments) {
+            allowComments = true
+        } else {
+            allowComments = false;
+        }
+
+        const newPost = new Post({
+            title: req.body.title,
+            status: req.body.status,
+            allowComments: allowComments,
+            body: req.body.body,
+            file: filename,
+            category: req.body.category,
+            date: Date.now()
+        });
+
+        newPost.save().then(savedPost => {
+            req.flash('success_message', `Post ${savedPost.title} was created successfully`);
+            res.redirect('/admin/posts');
+        }).catch(err => {
+            console.log(err, 'could not save post ');
+        });
     }
 
-    const newPost = new Post({
-        title: req.body.title,
-        status: req.body.status,
-        allowComments: allowComments,
-        body: req.body.body,
-        file:filename,
-        category: req.body.category, 
-        date: Date.now()
-    });
 
-    newPost.save().then(savedPost => {
-        req.flash('success_message', `Post ${savedPost.title} was created successfully`);
-        res.redirect('/admin/posts');
-    }).catch(err => {
-        console.log(err, 'could not save post ');
-    });
 });
 
 router.get('/edit/:id', (req, res) => {
     Post.findOne({ _id: req.params.id }).then(post => {
         Category.find({}).then(categories => {
-            res.render('admin/posts/edit', {post:post, categories:categories});
+            res.render('admin/posts/edit', { post: post, categories: categories });
         });
     });
 });
@@ -92,14 +121,14 @@ router.put('/edit/:id', (req, res) => {
 
             if (!isEmpty(req.files)) {
                 let file = req.files.file;
-                filename = '/uploads/' + Date.now() + '-'+ file.name;
+                filename = '/uploads/' + Date.now() + '-' + file.name;
                 post.file = filename;
                 file.mv('./public' + filename, (err) => {
                     if (err) throw err;
-                }); 
+                });
             }
             post.save().then(() => {
-                req.flash('success_message','Post was successfully updated');
+                req.flash('success_message', 'Post was successfully updated');
                 res.redirect('/admin/posts');
             });
         });
@@ -108,13 +137,13 @@ router.put('/edit/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     Post.findOne({ _id: req.params.id })
         .then(post => {
-            
-            fs.unlink(uploadDir + post.file, (err)=>{
-                req.flash('success_message','Post was successfully deleted');
+
+            fs.unlink(uploadDir + post.file, (err) => {
+                req.flash('success_message', 'Post was successfully deleted');
                 res.redirect('/admin/posts');
-            }); 
+            });
             post.delete();
         });
-        
+
 });
 module.exports = router;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,6 +14,7 @@
     <!-- Custom styles for the post single -->
     <link href="/css/blog-post.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     {{> home/home-nav}}
@@ -20,14 +22,16 @@
     <div class="container">
         {{#if errors}}
         {{#each errors}}
-        diov.
+        <div class="alert alert-danger">
+
+            {{message}}
+
+        </div>
         {{/each}}
         {{/if}}
         {{> home/form-msgs}}
         {{{body}}}
     </div>
-    <!-- /.container -->
-
     <!-- Footer -->
     {{> home/footer}}
 
