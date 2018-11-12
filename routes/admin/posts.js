@@ -12,7 +12,7 @@ const {userAuthenticated} = require('../../helpers/authentication');
 
 
 //Routes
-router.all('/*', userAuthenticated, (req, res, next) => {
+router.all('/*', (req, res, next) => {
     req.app.locals.layout = 'admin';
     next();
 });
@@ -22,6 +22,12 @@ router.get('/', (req, res) => {
         res.render('admin/posts', { posts: posts });
     });
 });
+
+router.get('/my-posts', (req, res)=>{
+    Post.find({user: req.user.id}).populate('category').then(posts => {
+        res.render('admin/posts/my-posts', { posts: posts });
+    });
+})
 
 router.get('/create', (req, res) => {
     Category.find({}).then(categories => {
@@ -77,6 +83,7 @@ router.post('/create', (req, res) => {
         }
 
         const newPost = new Post({
+            user: req.user.id,
             title: req.body.title,
             status: req.body.status,
             allowComments: allowComments,
@@ -114,6 +121,7 @@ router.put('/edit/:id', (req, res) => {
             } else {
                 allowComments = false;
             }
+            post.user = req.user.id;
             post.title = req.body.title;
             post.status = req.body.status;
             post.allowComments = allowComments;
@@ -136,14 +144,19 @@ router.put('/edit/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    Post.findOne({ _id: req.params.id })
+    Post.findOne({ _id: req.params.id }).populate('comments')
         .then(post => {
 
             fs.unlink(uploadDir + post.file, (err) => {
+                if(!post.comments.length < 1){
+                    post.comments.forEach(comment =>{
+                        comment.remove();
+                    });
+                }
+                post.delete();
                 req.flash('success_message', 'Post was successfully deleted');
                 res.redirect('/admin/posts');
             });
-            post.delete();
         });
 
 });

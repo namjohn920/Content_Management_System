@@ -10,7 +10,8 @@ const PostSchema = new Schema({
         ref: 'categories'
     },
     user: {
-        type:String
+        type:Schema.Types.ObjectId,
+        ref: 'users'
     },
     title: {
         type:String,
@@ -34,6 +35,10 @@ const PostSchema = new Schema({
     },
     date: {
         type: Date,
-    }
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'comments'
+    }]
 });
 module.exports = mongoose.model('Post', PostSchema);

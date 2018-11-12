@@ -4,7 +4,7 @@ const Category = require('../../models/Category');
 const {userAuthenticated} = require('../../helpers/authentication');
 
 //Routes
-router.all('/*', userAuthenticated, (req,res,next) => {
+router.all('/*',  (req,res,next) => {
     req.app.locals.layout = 'admin';
     next();
 });
