@@ -16,7 +16,7 @@
             <th>{{id}}</th>
             <td>{{user.firstName}}</td>
             <td>
-                <input data-id="{{id}}" type="checkbox" name="approveComment" />
+                <input data-id="{{id}}" {{#if approveComment}} checked {{/if}}type="checkbox" name="approveComment" />
             </td>
 
             <td>{{GenerateTime date 'MMMM Do YYYY, h:mm:ss a'}}</td>
