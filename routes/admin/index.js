@@ -25,6 +25,7 @@ router.post('/generate-fake-posts', (req, res)=> {
         post.allowComments = faker.random.boolean();
         post.body = faker.lorem.sentence();
         post.file = "http://vignette3.wikia.nocookie.net/gundam/images/6/66/Nu_Gundam_Photo3.jpg/revision/latest/scale-to-width-down/2000?cb=20101213134129"
+        post.slug = faker.name.title();
         post.date = Date.now();
         post.save(function(err){
             if(err) throw err;

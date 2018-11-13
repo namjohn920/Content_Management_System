@@ -29,12 +29,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 const port = 3000 || process.env.PORT;
 
 //Setting up VIEW Engine
-const {select, GenerateTime} = require('./helpers/handlebars-helpers');
+const {select, GenerateTime, paginate} = require('./helpers/handlebars-helpers');
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main',
     helpers: {select: select,
-    GenerateTime: GenerateTime}, 
+    GenerateTime: GenerateTime,
+    paginate: paginate}, 
     //The first SELECT is the name thats going to be used in handlebars template. It can be anyname
 }));
 app.set('view engine', 'handlebars');
