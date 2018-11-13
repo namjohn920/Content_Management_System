@@ -22,7 +22,7 @@ router.get('/', (req,res) => {
     Post.find({})
     .skip((perPage * page)-perPage).limit(perPage)
     .then((posts)=>{
-        Post.count().then(postCount => {
+        Post.countDocuments().then(postCount => {
             Category.find({}).then(categories => {
                 res.render('home/index', {
                     posts: posts, 
